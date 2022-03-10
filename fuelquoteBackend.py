@@ -14,7 +14,7 @@ def my_form_post():
 
     gallons = request.form.get("gallons")
     if int(gallons) <= 0:
-        error_statement += "\nGallons must be a positive number greater than 0"
+        error_statement += "\nGallons must be greater than 0."
         errors += 1
     print("gallons:", gallons)
 
@@ -44,3 +44,6 @@ def my_form_post():
         error_statement = "Fuel Quote Submitted!"
         print(request.form)
         return render_template('fuelquote.html', error=error_statement)
+
+if __name__ == '__main__':
+    app.run(debug=True)

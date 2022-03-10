@@ -11,6 +11,15 @@
             text-align: center
         }
     </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $(function() {  
+          var date = new Date().toISOString().slice(0,10);    
+          $('#date').attr('min', date);
+        })
+      })
+    </script>
   </head>
   <body>
     <h1>Fuel Quote Form</h1>
@@ -29,7 +38,7 @@
       <label>Zipcode: </label>
       <input type="number" name="zip" value="10019" readonly><br><br>
       <label>Delivery Date: </label>
-      <input type="date" name="delivery_date" value="{{ delivery_date }}" required><br><br>
+      <input type="date" id="date" name="delivery_date" value="{{ delivery_date }}" required><br><br>
       <input type="submit" value="Submit"><br><br>
     </form>
 
