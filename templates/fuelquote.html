@@ -15,7 +15,11 @@
     <script>
       $(document).ready(function() {
         $(function() {  
-          var date = new Date().toISOString().slice(0,10);    
+          var date = new Date();   
+          offset = date.getTimezoneOffset() * 60 * 1000;
+          dateLocal = date - offset;
+          dateLocal = new Date(dateLocal);
+          date = dateLocal.toISOString().slice(0, 10);
           $('#date').attr('min', date);
         })
       })
