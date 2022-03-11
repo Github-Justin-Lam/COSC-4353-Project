@@ -11,25 +11,34 @@
             text-align: center
         }
     </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $(function() {  
+          var date = new Date().toISOString().slice(0,10);    
+          $('#date').attr('min', date);
+        })
+      })
+    </script>
   </head>
   <body>
     <h1>Fuel Quote Form</h1>
 
-    <form>
+    <form method="POST">
       <label>Gallons Requested: </label>
-      <input type="number" name="gallons" required><br><br>
+      <input type="number" name="gallons" value="{{ gallons }}" required><br><br>
       <label>Address 1: </label>
-      <input type="text" name="address1" readonly><br><br>
+      <input type="text" name="address1" value="4257 Briercliff Road" readonly><br><br>
       <label>Address 2: </label>
-      <input type="text" name="address2" readonly><br><br>
+      <input type="text" name="address2" value="Apartment 123" readonly><br><br>
       <label>City: </label>
-      <input type="text" name="city" readonly><br><br>
+      <input type="text" name="city" value="New York City" readonly><br><br>
       <label>State: </label>
-      <input type="text" name="state" readonly><br><br>
+      <input type="text" name="state" value="New York" readonly><br><br>
       <label>Zipcode: </label>
-      <input type="number" name="zip" readonly><br><br>
+      <input type="number" name="zip" value="10019" readonly><br><br>
       <label>Delivery Date: </label>
-      <input type="date" name="delivery_date" required><br><br>
+      <input type="date" id="date" name="delivery_date" value="{{ delivery_date }}" required><br><br>
       <input type="submit" value="Submit"><br><br>
     </form>
 
@@ -38,6 +47,8 @@
     <label>Total Amount Due: </label>
     <input type="number" name="total" readonly><br><br>
 
-    <script src="script.js"></script>
+    {% if error %}
+    <p id="error">{{ error }}</p>
+    {% endif %}
   </body>
 </html>
