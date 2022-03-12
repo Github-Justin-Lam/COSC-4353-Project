@@ -5,9 +5,9 @@ app = Flask(__name__)
 
 # Hardcoded User (Because we can't use a regular database)
 User = {
-    "username": 'root',
-    "email": 'root@example.com',
-    "password": '123456'
+    "username": "root",
+    "email": "root@example.com",
+    "password": "123456"
 }
 
 
@@ -50,12 +50,14 @@ def my_form():
 def login():
     if request.method == 'POST':
         # Get Form Fields
-        username = request.form['username']
-        password = request.form['password']
+        username = request.form.get("username")
+        password = request.form.get("password")
         # Check if this matches the "user" dictionary
-        if username == User["username"] and password == User["password"]:
+        print(username, User.get("username"))
+        print(password, User.get("password"))
+        if username == User.get("username") and password == User.get("password"):
             error = 'Login Successful'
-            return render_template('login.html')
+            return render_template('login.html', error=error)
         else:
             error = 'User not found'
             return render_template('login.html', error=error)
