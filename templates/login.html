@@ -21,7 +21,7 @@
             <i class="material-icons lock">lock</i> Login
         </div>
 
-        <form>
+        <form action="/" method="POST">
             <div class="input">
                 <div class="input-addon">
                     <i class="material-icons">face</i>
@@ -44,7 +44,14 @@
             </div>
 
             <input type="submit" value="Log In" />
+
+            {% if error %}
+                <p id="error">{{ error }}</p>
+            {% endif %}
+
         </form>
+
+        
 
         <!-- <div class="forgot-password">
             <a href="#">Forgot your password?</a>
