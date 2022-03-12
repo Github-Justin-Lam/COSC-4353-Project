@@ -23,7 +23,7 @@ def my_form_post():
         error_statement += "\nAn address can only be up to 100 characters"
         errors += 1
     city = request.form.get("city")
-    if len(city) > 100:
+    if len(city) > 100 or len(city) <= 0:
         error_statement += "\nA city is required & can only be up to 100 characters"
         errors += 1
     state = request.form.get("state")
