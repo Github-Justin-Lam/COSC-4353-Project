@@ -21,12 +21,6 @@ User = {
 #     ])
 #     confirm = PasswordField('Confirm Password')
 
-# Class for pricing module
-class PricingModule:
-    def __init__(self, gallons, delivery_address, delivery_date):
-        price_per_gallon = gallons*3
-        return price_per_gallon
-
 @app.route('/')
 def my_form():
     return render_template('login.html')

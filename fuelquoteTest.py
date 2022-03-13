@@ -4,10 +4,10 @@ import unittest
 """
 Name                  Stmts   Miss  Cover   Missing
 ---------------------------------------------------
-fuelquoteBackend.py      32      0   100%
+fuelquoteBackend.py      36      2    94%   8-9
 fuelquoteTest.py         59      0   100%
 ---------------------------------------------------
-TOTAL                    91      0   100%
+TOTAL                    95      2    98%
 """
 
 class FlaskTestCase(unittest.TestCase):
