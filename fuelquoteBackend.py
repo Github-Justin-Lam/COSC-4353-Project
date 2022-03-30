@@ -1,6 +1,15 @@
 from flask import Flask, request, render_template
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
+
+#configure db
+app.config['MYSQL_HOST'] = "localhost"
+app.config['MYSQL_USER'] = "root"
+app.config['MYSQL_PASSWORD'] = "password123"
+app.config['MYSQL_DB'] = "flaskapp"
+
+mysql = MySQL(app)
 
 # Class for pricing module
 class PricingModule:
@@ -10,7 +19,16 @@ class PricingModule:
 
 @app.route('/')
 def my_form():
-    return render_template('fuelquote.html')
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM profile") #select row from profile table
+    profile = cur.fetchone() #fetches profile as a tuple
+    address1=profile[1] #corresponding index in tuple
+    address2=profile[2]
+    city=profile[3]
+    state=profile[4]
+    zipcode=profile[5]
+    return render_template('fuelquote.html', address1=address1,
+        address2=address2, city=city, state=state, zip=zipcode)
 
 @app.route('/', methods=['POST'])
 def my_form_post():

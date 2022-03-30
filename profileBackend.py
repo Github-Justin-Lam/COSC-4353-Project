@@ -1,6 +1,28 @@
 from flask import Flask, request, render_template
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
+
+""" SQL CODE TO CREATE TABLE/DATABASE
+CREATE DATABASE flaskapp;
+USE flaskapp;
+CREATE TABLE profile(
+	fullname varchar(50) NOT NULL,
+    address1 varchar(100) NOT NULL,
+    address2 varchar(100),
+    city varchar(100) NOT NULL,
+    state char(2) NOT NULL,
+    zipcode integer NOT NULL
+		CONSTRAINT zipcode_length
+        CHECK (zipcode between 10000 and 999999999));
+"""
+#configure db
+app.config['MYSQL_HOST'] = "localhost"
+app.config['MYSQL_USER'] = "root"
+app.config['MYSQL_PASSWORD'] = "password123"
+app.config['MYSQL_DB'] = "flaskapp"
+
+mysql = MySQL(app)
 
 @app.route('/')
 def my_form():
@@ -10,6 +32,7 @@ def my_form():
 def my_form_post():
     error_statement = ""
     errors = 0
+
     name = request.form.get("name")
     if len(name) > 50 or len(name) <= 0:
         error_statement += "\nA name is required & can only be up to 50 characters"
@@ -34,6 +57,11 @@ def my_form_post():
     if len(zipcode) > 9 or len(zipcode) < 5:
         error_statement += "\nA zipcode is required & must be between 5-9 characters"
         errors += 1
+    cur = mysql.connection.cursor()
+    cur.execute("INSERT INTO profile (fullname, address1, address2, city, state, zipcode) VALUES (%s,%s,%s,%s,%s,%s)", (name,address1,address2,city,state,zipcode))
+    mysql.connection.commit()
+    cur.close()
+
     print(errors, "errors encountered.", error_statement)
     if errors >= 1:
         return render_template('profile.html', error=error_statement,
