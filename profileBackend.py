@@ -57,11 +57,6 @@ def my_form_post():
     if len(zipcode) > 9 or len(zipcode) < 5:
         error_statement += "\nA zipcode is required & must be between 5-9 characters"
         errors += 1
-    cur = mysql.connection.cursor()
-    cur.execute("INSERT INTO profile (fullname, address1, address2, city, state, zipcode) VALUES (%s,%s,%s,%s,%s,%s)", (name,address1,address2,city,state,zipcode))
-    mysql.connection.commit()
-    cur.close()
-
     print(errors, "errors encountered.", error_statement)
     if errors >= 1:
         return render_template('profile.html', error=error_statement,
@@ -69,4 +64,9 @@ def my_form_post():
     else: 
         error_statement = "Profile Completed!"
         print(request.form)
+        #if no errors, insert profile info to table
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO profile (fullname, address1, address2, city, state, zipcode) VALUES (%s,%s,%s,%s,%s,%s)", (name,address1,address2,city,state,zipcode))
+        mysql.connection.commit()
+        cur.close()
         return render_template('profile.html', error=error_statement)

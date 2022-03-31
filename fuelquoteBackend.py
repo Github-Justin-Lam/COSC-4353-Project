@@ -69,11 +69,6 @@ def my_form_post():
     delivery_date = request.form.get("delivery_date")
     print("delivery_date:", delivery_date)
 
-    cur = mysql.connection.cursor()
-    cur.execute("INSERT INTO fuelquote (gallons, delivery_date) VALUES (%s,%s)", (gallons, delivery_date))
-    mysql.connection.commit()
-    cur.close()
-
     print(errors, "errors encountered.", error_statement)
     if errors >= 1:
         return render_template('fuelquote.html', error=error_statement,
@@ -81,4 +76,9 @@ def my_form_post():
     else: 
         error_statement = "Fuel Quote Submitted!"
         print(request.form)
+        #if no errors, insert fuelquote info to table
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO fuelquote (gallons, delivery_date) VALUES (%s,%s)", (gallons, delivery_date))
+        mysql.connection.commit()
+        cur.close()
         return render_template('fuelquote.html', error=error_statement)
