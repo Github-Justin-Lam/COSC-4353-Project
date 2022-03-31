@@ -50,44 +50,20 @@
         <th>Suggested Price/Gallon</th>
         <th>Total Amount Due</th>
       </tr>
-
-      <tr>
-        <td>Example: 123</td>
-        <td>4257 Briercliff Road</td>
-        <td>Apartment 123</td>
-        <td>New York City</td>
-        <td>New York</td>
-        <td>10019</td>
-        <td>02/17/2022</td>
-        <td>1234</td>
-        <td>12345</td>
-      </tr>
-
       
+      {% for i in data %}
       <tr>
-        <td>Example: 456</td>
-        <td>4963 Mesa Drive</td>
-        <td></td>
-        <td>Las Vegas</td>
-        <td>Nevada</td>
-        <td>89101</td>
-        <td>02/18/2022</td>
-        <td>5678</td>
-        <td>56789</td>
+        <td>{{i[0]}}</td>
+        <td>{{address1}}</td>
+        <td>{{address2}}</td>
+        <td>{{city}}</td>
+        <td>{{state}}</td>
+        <td>{{zip}}</td>
+        <td>{{i[1]}}</td>
+        <td>{{i[2]}}</td>
+        <td>{{i[3]}}</td>
       </tr>
-
-      
-      <tr>
-        <td>Example: 123</td>
-        <td>1100 Collins Avenue</td>
-        <td></td>
-        <td>Worthington</td>
-        <td>Ohio</td>
-        <td>43085</td>
-        <td>02/19/2022</td>
-        <td>1234</td>
-        <td>12345</td>
-      </tr>
+      {% endfor %}
     </table>
   </body>
 </html>

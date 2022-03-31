@@ -3,6 +3,15 @@ from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 
+""" SQL CODE TO CREATE TABLE
+CREATE TABLE fuelquote(
+    gallons integer NOT NULL,
+    delivery_date date NOT NULL,
+    price float,
+    total float
+    );
+"""
+
 #configure db
 app.config['MYSQL_HOST'] = "localhost"
 app.config['MYSQL_USER'] = "root"
@@ -59,6 +68,11 @@ def my_form_post():
 
     delivery_date = request.form.get("delivery_date")
     print("delivery_date:", delivery_date)
+
+    cur = mysql.connection.cursor()
+    cur.execute("INSERT INTO fuelquote (gallons, delivery_date) VALUES (%s,%s)", (gallons, delivery_date))
+    mysql.connection.commit()
+    cur.close()
 
     print(errors, "errors encountered.", error_statement)
     if errors >= 1:
