@@ -4,10 +4,10 @@ import unittest
 """
 Name                Stmts   Miss  Cover   Missing
 -------------------------------------------------
-historyBackend.py       5      0   100%
-historyTest.py         13      0   100%
+historyBackend.py      23      0   100%
+historyTest.py         14      0   100%
 -------------------------------------------------
-TOTAL                  18      0   100%
+TOTAL                  37      0   100%
 """
 
 class FlaskTestCase(unittest.TestCase):
