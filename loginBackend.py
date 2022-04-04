@@ -4,6 +4,13 @@ from wtforms import Form, StringField, TextAreaField, PasswordField, validators,
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
+app.secret_key = "super secret key"
+
+"""
+CREATE TABLE users(
+	username varchar(25) PRIMARY KEY,
+    password varchar(100) NOT NULL);
+"""
 
 #configure db
 app.config['MYSQL_HOST'] = "localhost"
@@ -35,16 +42,15 @@ def my_form():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm(request.form)
-    if request.method == 'POST' and form.validate():
-        name = form.name.data
-        username = form.username.data
-        password = sha256_crypt.encrypt(str(form.password.data))
-
+    if request.method == 'POST':
+        username = request.form.get("username")
+        password = sha256_crypt.encrypt(str(request.form.get("password")))
+        print(username, password)
         # Create cursor
         cur = mysql.connection.cursor()
 
         # Execute query
-        cur.execute("INSERT INTO users(name, email, username, password) VALUES(%s, %s, %s, %s)", (name, email, username, password))
+        cur.execute("INSERT INTO users(username, password) VALUES(%s, %s)", (username, password))
 
         # Commit to DB
         mysql.connection.commit()
@@ -53,8 +59,9 @@ def register():
         cur.close()
 
         flash('You are now registered and can log in', 'success')
-
-        return redirect(url_for('login.html'))
+        error = 'You are now registered and can log in'
+        #return redirect(url_for('login'))
+        return render_template('login.html', error=error)
     return render_template('register.html', form=form)
 
 # User login
@@ -62,19 +69,22 @@ def register():
 def login():
     if request.method == 'GET':
         # Get Form Fields
-        username = request.form['username']
-        password_candidate = request.form['password']
-
+        username = request.args.get("username")
+        print(username)
+        password_candidate = request.args.get("password")
+        
         # Create cursor
         cur = mysql.connection.cursor()
 
         # Get user by username
-        result = cur.execute("SELECT * FROM users WHERE username = %s", [username])
-
+        sqlinput = "SELECT * FROM users WHERE username = " + "\"" + str(username) + "\""
+        result = cur.execute(sqlinput)
+        print(result)
         if result > 0:
             # Get stored hash
             data = cur.fetchone()
-            password = data['password']
+            print(data)
+            password = data[1]
 
             # Compare Passwords
             if sha256_crypt.verify(password_candidate, password):
@@ -83,7 +93,9 @@ def login():
                 session['username'] = username
 
                 flash('You are now logged in', 'success')
-                return redirect(url_for('dashboard'))
+                #return redirect(url_for('dashboard'))
+                error = 'You are now logged in'
+                return render_template('login.html', error=error)
             else:
                 error = 'Invalid login'
                 return render_template('login.html', error=error)

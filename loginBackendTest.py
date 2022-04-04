@@ -20,19 +20,20 @@ class FlaskTestCase(unittest.TestCase):
     def test_correct_form(self):
         tester = app.test_client(self)
         response = tester.post('/register',
-            data=dict(username= "root",
-                    password= '123456'
+            data=dict(email="username@gmail.com",
+                    username= "root",
+                    password= "123456"
                 ))
-        self.assertTrue(b'Registration Successful' in response.data)
+        self.assertTrue(b'You are now registered and can log in' in response.data)
 
     #ensure login behaves correctly given valid field inputs
-    def test_correct_form(self):
+    """def test_correct_form(self):
         tester = app.test_client(self)
-        response = tester.get('/login',
+        response = tester.post('/login',
             data=dict(username= "root",
                     password= '123456'
                 ))
-        self.assertTrue(b'Login Successful' in response.data)
+        self.assertTrue(b'Login Successful' in response.data)"""
     
     #ensure login behaves correctly given invalid field inputs
     def test_incorrect_form(self):
@@ -41,7 +42,7 @@ class FlaskTestCase(unittest.TestCase):
             data=dict(username= "root",
                     password= '126'
                 ))
-        self.assertTrue(b'User not found' in response.data)
+        self.assertTrue(b'Username not found' in response.data)
 
 if __name__ == '__main__':
     unittest.main()
