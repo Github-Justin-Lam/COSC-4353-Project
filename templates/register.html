@@ -55,6 +55,11 @@
             <br>
 
             <input type="submit" value="Register" />
+
+            {% if error %}
+                <p id="error">{{ error }}</p>
+            {% endif %}
+    
         </form>
 
         <!-- <div class="privacy">

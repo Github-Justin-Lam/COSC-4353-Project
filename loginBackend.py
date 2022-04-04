@@ -1,6 +1,6 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging
 from flask_mysqldb import MySQL
-from wtforms import Form, StringField, TextAreaField, PasswordField, validators
+from wtforms import Form, StringField, TextAreaField, PasswordField, validators, IntegerField
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
@@ -16,11 +16,15 @@ mysql = MySQL(app)
 # Class for registration
 class RegisterForm(Form):
     username = StringField('Username', [validators.Length(min=4, max=25)])
-    email = StringField('Email', [validators.Length(min=6, max=50)])
     password = PasswordField('Password', [
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords do not match')
     ])
+    zip = IntegerField('Zip', [validators.Length(min=5, max=9)])
+    address1 = StringField('Address1', [validators.Length(max=100)])
+    address1 = StringField('Address2', [validators.Length(max=100)])
+    city = StringField('City', [validators.Length(max=100)])
+    state = StringField('State', [validators.Length(max=100)])
     confirm = PasswordField('Confirm Password')
 
 @app.route('/')
@@ -33,7 +37,6 @@ def register():
     form = RegisterForm(request.form)
     if request.method == 'POST' and form.validate():
         name = form.name.data
-        email = form.email.data
         username = form.username.data
         password = sha256_crypt.encrypt(str(form.password.data))
 
