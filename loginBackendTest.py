@@ -16,10 +16,19 @@ class FlaskTestCase(unittest.TestCase):
         response = tester.get('/', content_type='html/text')
         self.assertTrue(b'Login' in response.data) #check if loaded with the name of page
 
+    #ensure registration behaves correctly given valid field inputs
+    def test_correct_form(self):
+        tester = app.test_client(self)
+        response = tester.post('/register',
+            data=dict(username= "root",
+                    password= '123456'
+                ))
+        self.assertTrue(b'Registration Successful' in response.data)
+
     #ensure login behaves correctly given valid field inputs
     def test_correct_form(self):
         tester = app.test_client(self)
-        response = tester.post('/',
+        response = tester.get('/login',
             data=dict(username= "root",
                     password= '123456'
                 ))
@@ -28,7 +37,7 @@ class FlaskTestCase(unittest.TestCase):
     #ensure login behaves correctly given invalid field inputs
     def test_incorrect_form(self):
         tester = app.test_client(self)
-        response = tester.post('/',
+        response = tester.get('/login',
             data=dict(username= "root",
                     password= '126'
                 ))

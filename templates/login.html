@@ -21,7 +21,7 @@
             <i class="material-icons lock">lock</i> Login
         </div>
 
-        <form action="/" method="POST">
+        <form action="/login" method="GET">
             <div class="input">
                 <div class="input-addon">
                     <i class="material-icons">face</i>
@@ -48,11 +48,11 @@
             {% if error %}
                 <p id="error">{{ error }}</p>
             {% endif %}
-
+            
         </form>
-
         
-
+        
+        
         <!-- <div class="forgot-password">
             <a href="#">Forgot your password?</a>
         </div>
@@ -62,7 +62,7 @@
 
         <div class="register">
             Don't have an account yet?
-            <a href="#"><button id="register-link">Register here</button></a>
+            <a href="register.html"><button id="register-link">Register here</button></a>
         </div>
     </div>
 </body>
