@@ -27,13 +27,13 @@ class FlaskTestCase(unittest.TestCase):
         self.assertTrue(b'You are now registered and can log in' in response.data)
 
     #ensure login behaves correctly given valid field inputs
-    """def test_correct_form(self):
+    """def test_correct_login(self):
         tester = app.test_client(self)
-        response = tester.post('/login',
+        response = tester.get('/login',
             data=dict(username= "root",
                     password= '123456'
                 ))
-        self.assertTrue(b'Login Successful' in response.data)"""
+        self.assertTrue(b'You are now logged in' in response.data)"""
     
     #ensure login behaves correctly given invalid field inputs
     def test_incorrect_form(self):

@@ -9,6 +9,7 @@
     <style>
       body{
             background-color: #303641;
+            text-align: center;
       }
       h1{
         text-align: center;
@@ -37,6 +38,10 @@
 
   </head>
   <body>
+    <a href="{{ url_for('profile') }}"><button id="register-link">Edit Profile</button></a>
+    <a href="{{ url_for('fuelquote') }}"><button id="register-link">Make a Quote</button></a>
+    <a href="{{ url_for('history') }}"><button id="register-link">Check History</button></a>
+    <a href="{{ url_for('login') }}"><button id="register-link">Sign out</button></a>
     <h1>Fuel Quote History</h1>
     <table>
       <tr>
