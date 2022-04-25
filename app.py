@@ -20,6 +20,7 @@ CREATE TABLE users(
 	username varchar(25) PRIMARY KEY,
     password varchar(100) NOT NULL);
 CREATE TABLE profile(
+    username varchar(25) PRIMARY KEY,
 	fullname varchar(50) NOT NULL,
     address1 varchar(100) NOT NULL,
     address2 varchar(100),
@@ -29,6 +30,7 @@ CREATE TABLE profile(
 		CONSTRAINT zipcode_length
         CHECK (zipcode between 10000 and 999999999));
 CREATE TABLE fuelquote(
+    username varchar(25) PRIMARY KEY,
     gallons integer NOT NULL,
     delivery_date date NOT NULL,
     price float,
@@ -126,12 +128,31 @@ def login():
 # Profile
 @app.route('/profile')
 def profile():
-    return render_template('profile.html')
+    cur = mysql.connection.cursor()
+    #"IF NOT EXISTS (SELECT * FROM profile WHERE username = (user) VALUES (%s)",
+    cur.execute("SELECT * FROM profile WHERE username = \"" + session['username'] + "\"") #select row from profile table
+    #cur.execute("SELECT * FROM profile")
+    profile = cur.fetchone() #fetches profile as a tuple
+    print(profile)
+    if not profile: #if profile not made yet, hide buttons
+        return render_template('profile.html', error="Please fill your profile.", hide=True)
+    else: #if profile made already, show current profile, enable navigation buttons
+        name = profile[1]
+        address1=profile[2] #corresponding index in tuple
+        address2=profile[3]
+        city=profile[4]
+        state=profile[5]
+        zipcode=profile[6]
+        return render_template('profile.html', name=name, address1=address1,
+            address2=address2, city=city, state=state, zip=zipcode, hide=False)
 
 @app.route('/profile', methods=['POST'])
 def profile_form_post():
     error_statement = ""
     errors = 0
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM profile WHERE username = \"" + session['username'] + "\"") #find if profile is made yet
+    profile = cur.fetchone() #fetches profile as a tuple
     name = request.form.get("name")
     if len(name) > 50 or len(name) <= 0:
         error_statement += "\nA name is required & can only be up to 50 characters"
@@ -158,17 +179,25 @@ def profile_form_post():
         errors += 1
     print(errors, "errors encountered.", error_statement)
     if errors >= 1:
-        return render_template('profile.html', error=error_statement,
-            name=name, address1=address1, address2=address2, city=city, zip=zipcode)
-    else: 
+        if not profile:
+            return render_template('profile.html', error=error_statement,
+                name=name, address1=address1, address2=address2, city=city, zip=zipcode, hide=True)
+        else:
+            return render_template('profile.html', error=error_statement,
+                name=name, address1=address1, address2=address2, city=city, zip=zipcode, hide=False)
+    else: #if no errors, add/change profile
         error_statement = "Profile Completed!"
         print(request.form)
-        #if no errors, insert profile info to table
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO profile (fullname, address1, address2, city, state, zipcode) VALUES (%s,%s,%s,%s,%s,%s)", (name,address1,address2,city,state,zipcode))
-        mysql.connection.commit()
-        cur.close()
-        return render_template('profile.html', error=error_statement)
+        if not profile: #if profile not made yet, add profile, hide buttons
+            cur.execute("INSERT INTO profile (username, fullname, address1, address2, city, state, zipcode) VALUES (%s,%s,%s,%s,%s,%s,%s)", (session['username'],name,address1,address2,city,state,zipcode))
+            mysql.connection.commit()
+            cur.close()
+            return render_template('profile.html', error=error_statement, name=name, address1=address1, address2=address2, city=city, zip=zipcode, hide=False)
+        else: #if profile made already, change profile, enable navigation
+            cur.execute("UPDATE profile SET fullname=\""+name+"\", address1=\""+address1+"\", address2=\""+address2+"\", city=\""+city+"\", state=\""+state+"\", zipcode="+zipcode+" WHERE username=\""+session['username']+"\"")
+            mysql.connection.commit()
+            cur.close()
+            return render_template('profile.html', error=error_statement, name=name, address1=address1, address2=address2, city=city, zip=zipcode, hide=False)
 
 # Class for pricing module
 class PricingModule:

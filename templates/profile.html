@@ -13,9 +13,11 @@
     </style>
   </head>
   <body>
+    {% if hide == False %}
     <a href="{{ url_for('profile') }}"><button id="register-link">Edit Profile</button></a>
     <a href="{{ url_for('fuelquote') }}"><button id="register-link">Make a Quote</button></a>
     <a href="{{ url_for('history') }}"><button id="register-link">Check History</button></a>
+    {% endif %}
     <a href="{{ url_for('login') }}"><button id="register-link">Sign out</button></a>
     <h1>Client Profile Management</h1>
     <form method="POST">  
