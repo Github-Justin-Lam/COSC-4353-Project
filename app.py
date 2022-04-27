@@ -30,7 +30,8 @@ CREATE TABLE profile(
 		CONSTRAINT zipcode_length
         CHECK (zipcode between 10000 and 999999999));
 CREATE TABLE fuelquote(
-    username varchar(25) PRIMARY KEY,
+    username varchar(25) NOT NULL,
+    FOREIGN KEY (username) REFERENCES profile(username),
     gallons integer NOT NULL,
     delivery_date date NOT NULL,
     price float,
@@ -208,13 +209,13 @@ class PricingModule:
 @app.route('/fuelquote')
 def fuelquote():
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM profile") #select row from profile table
+    cur.execute("SELECT * FROM profile WHERE username = \"" + session['username'] + "\"") #select row from profile table
     profile = cur.fetchone() #fetches profile as a tuple
-    address1=profile[1] #corresponding index in tuple
-    address2=profile[2]
-    city=profile[3]
-    state=profile[4]
-    zipcode=profile[5]
+    address1=profile[2] #corresponding index in tuple
+    address2=profile[3]
+    city=profile[4]
+    state=profile[5]
+    zipcode=profile[6]
     return render_template('fuelquote.html', address1=address1,
         address2=address2, city=city, state=state, zip=zipcode)
 
@@ -257,7 +258,7 @@ def fuelquote_post():
         print(request.form)
         #if no errors, insert fuelquote info to table
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO fuelquote (gallons, delivery_date) VALUES (%s,%s)", (gallons, delivery_date))
+        cur.execute("INSERT INTO fuelquote (username, gallons, delivery_date) VALUES (%s,%s,%s)", (session['username'], gallons, delivery_date))
         mysql.connection.commit()
         cur.close()
         return render_template('fuelquote.html', error=error_statement)
@@ -266,20 +267,23 @@ def fuelquote_post():
 @app.route('/history')
 def history():
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM profile")
+    cur.execute("SELECT * FROM profile WHERE username = \"" + session['username'] + "\"")
     profile = cur.fetchone() #fetches profile as a tuple
-    address1=profile[1] #corresponding index in tuple
-    address2=profile[2]
-    city=profile[3]
-    state=profile[4]
-    zipcode=profile[5]
+    address1=profile[2] #corresponding index in tuple
+    address2=profile[3]
+    city=profile[4]
+    state=profile[5]
+    zipcode=profile[6]
+    username = profile[0]
 
-    cur.execute("SELECT * FROM fuelquote")
+    cur.execute("SELECT * FROM fuelquote WHERE username = \"" + session['username'] + "\"")
     fuelquote = cur.fetchall() #fetches fuelquote as a tuple
+    # for row in fuelquote:
+        
     mysql.connection.commit()
     cur.close()
 
-    return render_template('history.html', address1=address1,
+    return render_template('history.html', username=username, address1=address1,
         address2=address2, city=city, state=state, zip=zipcode, data = fuelquote)
 
 if __name__ == "__main__":
