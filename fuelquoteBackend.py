@@ -5,11 +5,12 @@ app = Flask(__name__)
 
 """ SQL CODE TO CREATE TABLE
 CREATE TABLE fuelquote(
+    username varchar(25) NOT NULL,
+    FOREIGN KEY (username) REFERENCES profile(username),
     gallons integer NOT NULL,
     delivery_date date NOT NULL,
     price float,
-    total float
-    );
+    total float);
 """
 
 #configure db

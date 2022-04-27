@@ -261,7 +261,7 @@ def fuelquote_post():
         cur.execute("INSERT INTO fuelquote (username, gallons, delivery_date) VALUES (%s,%s,%s)", (session['username'], gallons, delivery_date))
         mysql.connection.commit()
         cur.close()
-        return render_template('fuelquote.html', error=error_statement)
+        return render_template('fuelquote.html', error=error_statement, address1=address1, address2=address2, city=city, state=state, zip=zip)
 
 # History
 @app.route('/history')
