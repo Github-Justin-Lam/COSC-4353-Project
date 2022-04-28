@@ -175,96 +175,176 @@ class FlaskTestCase(unittest.TestCase):
     
     #tests gallons empty (invalid)
     def test_gallons_empty_form(self):
-        tester = app.test_client(self)
-        response = tester.post('/fuelquote', 
-            data=dict(gallons = ""))
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "alex"
+            response = tester.post('/fuelquote', 
+                data=dict(gallons = ""))
 
     #tests gallons negative (invalid)
     def test_gallons_negative_form(self):
-        tester = app.test_client(self)
-        response = tester.post('/fuelquote', 
-            data=dict(gallons = "-5"))
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "alex"
+            response = tester.post('/fuelquote', 
+                data=dict(gallons = "-5"))
 
     #tests gallons zero (invalid)
     def test_gallons_zero_form(self):
-        tester = app.test_client(self)
-        response = tester.post('/fuelquote', 
-            data=dict(gallons = "0"))
-
-    #tests gallons positive (valid)
-    def test_gallons_positive_form(self):
-        tester = app.test_client(self)
-        response = tester.post('/fuelquote', 
-            data=dict(gallons = "5"))
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "alex"
+            response = tester.post('/fuelquote', 
+                data=dict(gallons = "0"))
 
     #tests delivery_date empty (invalid)
     def test_delivery_date_empty_form(self):
-        tester = app.test_client(self)
-        response = tester.post('/fuelquote', 
-            data=dict(delivery_date = ""))
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "alex"
+            response = tester.post('/fuelquote', 
+                data=dict(delivery_date = ""))
     
     #tests delivery_date past (invalid)
     def test_delivery_date_past_form(self):
-        tester = app.test_client(self)
-        response = tester.post('/fuelquote', 
-            data=dict(delivery_date = "2022-03-11"))
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "alex"
+            response = tester.post('/fuelquote', 
+                data=dict(delivery_date = "2022-03-11"))
 
     #tests delivery_date present (valid)
     def test_delivery_date_present_form(self):
-        tester = app.test_client(self)
-        response = tester.post('/fuelquote', 
-            data=dict(delivery_date = "2022-03-12"))
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "alex"
+            response = tester.post('/fuelquote', 
+                data=dict(delivery_date = "2022-04-28"))
 
     #tests delivery_date future (valid)
     def test_delivery_date_future_form(self):
-        tester = app.test_client(self)
-        response = tester.post('/fuelquote', 
-            data=dict(delivery_date = "2023-04-13"))
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "alex"
+            response = tester.post('/fuelquote', 
+                data=dict(delivery_date = "2023-04-13"))
 
     #tests gallons (invalid) and delivery_date empty date (invalid)
     def test_both_empty_form(self):
-        tester = app.test_client(self)
-        response = tester.post('/fuelquote', 
-            data=dict(gallons = "", delivery_date = ""))
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "alex"
+            response = tester.post('/fuelquote', 
+                data=dict(gallons = "", delivery_date = ""))
+
+    #tests gallons positive (valid)
+    def test_gallons_positive_form(self):
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "alex"
+            response = tester.post('/fuelquote', 
+                data=dict(gallons = "5"))
 
     #tests gallons negative (invalid) and delivery_date past date (invalid)
     def test_both_invalid_form(self):
-        tester = app.test_client(self)
-        response = tester.post('/fuelquote', 
-            data=dict(gallons = "-6", delivery_date = "2000-03-10"))
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "alex"
+            response = tester.post('/fuelquote', 
+                data=dict(gallons = "-6", delivery_date = "2000-03-10"))
 
     #tests gallons zero (invalid) and delivery_date past date (invalid)
     def test_both_invalid_2_form(self):
-        tester = app.test_client(self)
-        response = tester.post('/fuelquote', 
-            data=dict(gallons = "0", delivery_date = "2000-03-09"))
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "alex"
+            response = tester.post('/fuelquote', 
+                data=dict(gallons = "0", delivery_date = "2000-03-09"))
 
-    #tests gallons positive (valid) and delivery_date future date (valid)
+    #tests gallons positive (valid) and delivery_date future date (valid), handles valid gallons and date (in-state, first-time)
     def test_both_valid_form(self):
-        tester = app.test_client(self)
-        response = tester.post('/fuelquote', 
-            data=dict(gallons = "9", delivery_date = "2055-03-15"))
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "alex"
+            response = tester.post('/fuelquote', 
+                data=dict(gallons = "9", state = "TX", delivery_date = "2055-03-15"))
 
     #tests gallons positive (valid) and delivery_date past date (invalid)
     def test_valid_invalid_form(self):
-        tester = app.test_client(self)
-        response = tester.post('/fuelquote', 
-            data=dict(gallons = "9", delivery_date = "1999-03-01"))
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "alex"
+            response = tester.post('/fuelquote', 
+                data=dict(gallons = "9", state = "TX", delivery_date = "1999-03-01"))
 
     #tests gallons zero (invalid) and delivery_date future date (valid)
     def test_invalid_valid_form(self):
-        tester = app.test_client(self)
-        response = tester.post('/fuelquote', 
-            data=dict(gallons = "0", delivery_date = "2222-05-05"))
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "alex"
+            response = tester.post('/fuelquote', 
+                data=dict(gallons = "0", state = "TX", delivery_date = "2222-05-05"))
 
     #tests gallons negative (invalid) and delivery_date future date (valid)
     def test_invalid_valid_2_form(self):
-        tester = app.test_client(self)
-        response = tester.post('/fuelquote', 
-            data=dict(gallons = "-999", delivery_date = "2223-01-01"))
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "alex"
+            response = tester.post('/fuelquote', 
+                data=dict(gallons = "-999", state = "TX", delivery_date = "2223-01-01"))
+
+    #tests valid gallons, in-state, valid date (returning user)
+    def test_both_valid_2_form(self):
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "alex"
+            response = tester.post('/fuelquote', 
+                data=dict(gallons = "1500", state = "TX", delivery_date = "2333-01-01"))
+    
+    #new user: justin 
+    #ensure that flask was set up correctly
+
+    #valid gallons and date, in-state (first time)
+    def test_justin_form(self):
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "justin"
+            response = tester.post('/fuelquote', 
+                data=dict(gallons = "1500", state = "TX", delivery_date = "2333-01-01"))
+
+    #valid gallons over 1000 and date, in-state (returning)
+    def test_justin_2_form(self):
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "justin"
+            response = tester.post('/fuelquote', 
+                data=dict(gallons = "70000", state = "TX", delivery_date = "2333-01-02"))
+
+    #valid gallons under 1000 and date, in-state (returning)
+    def test_justin_3_form(self):
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "justin"
+            response = tester.post('/fuelquote', 
+                data=dict(gallons = "57", state = "TX", delivery_date = "2333-01-03"))
+
+    #valid gallons over 1000 and date, out-state (returning)
+    def test_justin_4_form(self):
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "justin"
+            response = tester.post('/fuelquote', 
+                data=dict(gallons = "1500", state = "CA", delivery_date = "2333-01-01"))
+
+    #valid gallons under 1000 and date, out-state (returning)
+    def test_justin_5_form(self):
+        with app.test_client() as tester:
+            with tester.session_transaction() as sess:
+                sess["username"] = "justin"
+            response = tester.post('/fuelquote', 
+                data=dict(gallons = "1", state = "CA", delivery_date = "2335-01-23"))
 
     #HISTORY TESTING
-
     #ensure that flask was set up correctly
     def test_history(self):
         with app.test_client() as tester:

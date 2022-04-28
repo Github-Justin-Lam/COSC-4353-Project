@@ -34,6 +34,11 @@ CREATE TABLE fuelquote(
     FOREIGN KEY (username) REFERENCES profile(username),
     gallons integer NOT NULL,
     delivery_date date NOT NULL,
+	address1 varchar(100) NOT NULL,
+    address2 varchar(100),
+    city varchar(100) NOT NULL,
+    state char(2) NOT NULL,
+    zipcode integer NOT NULL,
     price float,
     total float);
 """
@@ -202,9 +207,42 @@ def profile_form_post():
 
 # Class for pricing module
 class PricingModule:
-    def __init__(self, gallons, delivery_address, delivery_date):
-        price_per_gallon = gallons*3
-        return price_per_gallon
+    def __init__(self, username, gallons, state):
+        #self.username = username
+        #self.gallons = gallons
+        #self.state = state
+        if(state == "TX"):
+            locationFactor = 0.02
+            print("in-state")
+        else:
+            locationFactor = 0.04
+            print("out-state")
+        
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM fuelquote WHERE username = \"" + username + "\"") #select row from profile table
+        fuelquote = cur.fetchone() #fetches one fuel quote as a tuple
+
+        if(fuelquote == None):
+            rateFactor = 0.00
+            print("first time fuelquote")
+        else: 
+            rateFactor = 0.01
+            print("returning user")
+        
+        if(int(gallons) >= 1000):
+            gallonsFactor = 0.02
+            print("gallons >= 1000")
+        else:
+            gallonsFactor = 0.03
+            print("gallons < 1000")
+        
+        margin = (locationFactor - rateFactor + gallonsFactor + 0.1) * 1.50
+        print("margin:", margin)
+        self.suggestedPrice = 1.50 + margin
+        print("self suggestedPrice:", self.suggestedPrice)
+        self.total = int(gallons) * self.suggestedPrice
+        print("self total:", self.total)
+
 # Fuel Quote
 @app.route('/fuelquote')
 def fuelquote():
@@ -217,7 +255,7 @@ def fuelquote():
     state=profile[5]
     zipcode=profile[6]
     return render_template('fuelquote.html', address1=address1,
-        address2=address2, city=city, state=state, zip=zipcode)
+        address2=address2, city=city, state=state, zip=zipcode, hide=True)
 
 @app.route('/fuelquote', methods=['POST'])
 def fuelquote_post():
@@ -248,33 +286,50 @@ def fuelquote_post():
 
     delivery_date = request.form.get("delivery_date")
     print("delivery_date:", delivery_date)
-
+    
     print(errors, "errors encountered.", error_statement)
-    if errors >= 1:
-        return render_template('fuelquote.html', error=error_statement,
-            gallons=gallons, delivery_date=delivery_date)
-    else: 
-        error_statement = "Fuel Quote Submitted!"
-        print(request.form)
-        #if no errors, insert fuelquote info to table
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO fuelquote (username, gallons, delivery_date) VALUES (%s,%s,%s)", (session['username'], gallons, delivery_date))
-        mysql.connection.commit()
-        cur.close()
-        return render_template('fuelquote.html', error=error_statement, address1=address1, address2=address2, city=city, state=state, zip=zip)
+    if request.method == 'POST':
+        if request.form['submit'] == 'Calculate':
+            if errors >= 1:
+                return render_template('fuelquote.html', error=error_statement,
+                    gallons=gallons, delivery_date=delivery_date, address1=address1, address2=address2, city=city, state=state, zip=zip)
+            else: 
+                error_statement = "Calculated Successfully!"
+                print(request.form)
+
+                calc = PricingModule(session['username'], gallons, state)
+                print("price:", calc.suggestedPrice)
+                print("total:", calc.total)
+
+                return render_template('fuelquote.html', error=error_statement, gallons=gallons, delivery_date=delivery_date, address1=address1, address2=address2, city=city, state=state, zip=zip, price=calc.suggestedPrice, total=calc.total, hide=False)
+        elif request.form['submit'] == 'Submit':
+            error_statement = "Submitted Successfully!"
+
+            price = request.form.get("price")
+            print("price:", price)
+            total = request.form.get("total")
+            print("total:", total)
+
+            #insert fuel quote into table
+            cur = mysql.connection.cursor()
+            cur.execute("INSERT INTO fuelquote (username, gallons, delivery_date, address1, address2, city, state, zipcode, price, total) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", (session['username'], gallons, delivery_date, address1, address2, city, state, zip, price, total))
+            mysql.connection.commit()
+            cur.close()
+
+            return render_template('fuelquote.html', error=error_statement, address1=address1, address2=address2, city=city, state=state, zip=zip)
 
 # History
 @app.route('/history')
 def history():
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM profile WHERE username = \"" + session['username'] + "\"")
-    profile = cur.fetchone() #fetches profile as a tuple
-    address1=profile[2] #corresponding index in tuple
-    address2=profile[3]
-    city=profile[4]
-    state=profile[5]
-    zipcode=profile[6]
-    username = profile[0]
+    #cur.execute("SELECT * FROM profile WHERE username = \"" + session['username'] + "\"")
+    #profile = cur.fetchone() #fetches profile as a tuple
+    #address1=profile[2] #corresponding index in tuple
+    #address2=profile[3]
+    #city=profile[4]
+    #state=profile[5]
+    #zipcode=profile[6]
+    #username = profile[0]
 
     cur.execute("SELECT * FROM fuelquote WHERE username = \"" + session['username'] + "\"")
     fuelquote = cur.fetchall() #fetches fuelquote as a tuple
@@ -283,8 +338,7 @@ def history():
     mysql.connection.commit()
     cur.close()
 
-    return render_template('history.html', username=username, address1=address1,
-        address2=address2, city=city, state=state, zip=zipcode, data = fuelquote)
+    return render_template('history.html', data = fuelquote)
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -9,6 +9,11 @@ CREATE TABLE fuelquote(
     FOREIGN KEY (username) REFERENCES profile(username),
     gallons integer NOT NULL,
     delivery_date date NOT NULL,
+	address1 varchar(100) NOT NULL,
+    address2 varchar(100),
+    city varchar(100) NOT NULL,
+    state char(2) NOT NULL,
+    zipcode integer NOT NULL,
     price float,
     total float);
 """

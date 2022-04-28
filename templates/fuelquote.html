@@ -47,13 +47,16 @@
       <input type="number" name="zip" value="{{ zip }}" readonly><br><br>
       <label>Delivery Date: </label>
       <input type="date" id="date" name="delivery_date" value="{{ delivery_date }}" required><br><br>
-      <input type="submit" value="Submit"><br><br>
-    </form>
+      <input type="submit" name="submit" value="Calculate"><br><br>
 
-    <label>Suggested Price/Gallon: </label>
-    <input type="number" name="price" readonly><br><br>
-    <label>Total Amount Due: </label>
-    <input type="number" name="total" readonly><br><br>
+      {% if hide == False %}
+      <label>Suggested Price/Gallon: </label>
+      <input type="number" name="price" value="{{ price }}" readonly><br><br>
+      <label>Total Amount Due: </label>
+      <input type="number" name="total" value="{{ total }}" readonly><br><br>
+      <input type="submit" name="submit" value="Submit"><br><br>
+      {% endif %}
+    </form>
 
     {% if error %}
     <p id="error">{{ error }}</p>
