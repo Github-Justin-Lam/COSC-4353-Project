@@ -28,7 +28,7 @@ CREATE TABLE profile(
     state char(2) NOT NULL,
     zipcode integer NOT NULL
 		CONSTRAINT zipcode_length
-        CHECK (zipcode between 10000 and 999999999));
+        CHECK (zipcode between 1 and 999999999));
 CREATE TABLE fuelquote(
     username varchar(25) NOT NULL,
     FOREIGN KEY (username) REFERENCES profile(username),
@@ -182,6 +182,9 @@ def profile_form_post():
     zipcode = request.form.get("zip")
     if len(zipcode) > 9 or len(zipcode) < 5:
         error_statement += "\nA zipcode is required & must be between 5-9 characters"
+        errors += 1
+    elif (int)(zipcode) < 1 or (int)(zipcode) > 999999999:
+        error_statement += "\nPlease enter a valid zipcode"
         errors += 1
     print(errors, "errors encountered.", error_statement)
     if errors >= 1:
