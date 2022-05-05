@@ -1,3 +1,18 @@
+""" 
+CONTRIBUTIONS:
+Mohamed Farah - login/registration tests (lines 13~44)
+Alex Nguyen - profile tests (lines 45~158)
+Justin Lam - fuel quote tests (lines 166~371)
+
+COVERAGE REPORT:
+Name         Stmts   Miss  Cover
+--------------------------------
+app.py         218     76    65%
+appTest.py     198      6    97%
+--------------------------------
+TOTAL          416     82    80%
+"""
+
 from app import app
 import unittest
 

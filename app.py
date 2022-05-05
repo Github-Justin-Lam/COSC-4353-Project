@@ -1,3 +1,10 @@
+""" 
+CONTRIBUTIONS:
+Mohamed Farah - login/registration modules (lines 52~139)
+Alex Nguyen - profile module (lines 140~215)
+Justin Lam - fuel quote modules (lines 217~350)
+"""
+
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators, IntegerField
