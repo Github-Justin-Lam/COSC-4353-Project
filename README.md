@@ -7,3 +7,5 @@ https://flask.palletsprojects.com/en/2.0.x/quickstart/
 
 How to run unit tests and find code coverage percentage:
 https://coverage.readthedocs.io/en/6.3.2/
+
+![fuelquote-full](https://user-images.githubusercontent.com/93362798/224847591-eebd1b31-b3c5-4371-822f-27cc6497a2dd.gif)
